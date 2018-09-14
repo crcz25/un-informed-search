@@ -1,3 +1,8 @@
+"""
+  Moies Alexander Gama Espinosa
+  Carlos Roberto Cueto Zumaya
+  IA - (Un)informed Search Lab
+"""
 import sys
 import fileinput
 from pprint import pprint
@@ -13,8 +18,8 @@ def main():
   for line in fileinput.input():
     lines.append(line.rstrip())
 
+  #Obtain max height of container
   height = int(lines[0])
-  
   #Create start containers
   create_containers(lines[1], start)
   #Create goal containers
