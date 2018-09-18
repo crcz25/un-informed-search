@@ -39,7 +39,6 @@ def create_containers(line, array):
 
 def generateStates(state, height):
   children = []
-  #print(state, height)
   
   for pivot in range(len(state)):
     for dest in range(len(state)):
@@ -95,7 +94,6 @@ def a_star(start, goal, max_height, heuristic):
       return (s.cost, s.stack)
     
     children = generateStates(s.state, max_height)
-    #pprint(children)
     
     for child in children:
       new_cost = child[0] + s.cost
@@ -103,10 +101,16 @@ def a_star(start, goal, max_height, heuristic):
       new_stack = s.stack[:]
       new_stack.append(child[2])
       
-      #print(new_state)
+      #UCS
       ps = PrioritizedState(new_cost + heuristic(new_state), new_cost, new_state, new_stack)
+      
+      #Consistent heuristic
       #print('consistent', heuristicConsistent(new_state, goal))
+      #ps = PrioritizedState(new_cost + heuristicConsistent(new_state, goal), new_cost, new_state, new_stack)
+      
+      #Inconsisten heuristic
       #print('inconsistent', heuristicInconsistent(new_state, goal))
+      #ps = PrioritizedState(new_cost + heuristicInconsistent(new_state, goal), new_cost, new_state, new_stack)
       
       q.put(ps)
 
@@ -128,6 +132,7 @@ def heuristicConsistent(state, goal):
   #print('misplaced', misplaced_blocks)
   return misplaced_blocks
 
+# Calculate misplaced blocks * 2
 def heuristicInconsistent(state, goal):
   #print('state:', state, 'goal:', goal)
   misplaced_blocks = 0
