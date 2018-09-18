@@ -1,2 +1,2 @@
 #!/bin/sh
-python3 uninformed_lab.py
+python3 cons.py
