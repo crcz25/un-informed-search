@@ -129,10 +129,10 @@ def heuristicInconsistent(state, goal):
   for index, (stateElement, goalElement) in enumerate(zip_longest(state, goal)):
     #print(index, 'if', stateElement, '!=', goalElement)
     if stateElement != goalElement:
-      misplaced_blocks = misplaced_blocks + 1
+      misplaced_blocks = misplaced_blocks + 2
   
   #print('misplaced', misplaced_blocks)
-  return misplaced_blocks * 2
+  return misplaced_blocks * 5
 
 def main(heu):
   #print(heu)
@@ -151,8 +151,6 @@ def main(heu):
   create_containers(lines[2], goal)
   
   res = a_star(start, goal, height, heu)
-  #res = a_star(start, goal, height, heuristicConsistent)
-  #res = a_star(start, goal, height, heuristicInconsistent)
   
   if res == None:
     print('No solution found')
