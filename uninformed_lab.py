@@ -82,10 +82,14 @@ def a_star(start, goal, max_height, heuristic):
   q.put(PrioritizedState(0, 0, start, []))
   
   visited = set()
-  visited.add(toHashable(start))
-  
+
   while not(q.empty()):
     s = q.get()
+    
+    h = toHashable(s.state)
+    if h in visited:
+      continue
+    visited.add(h)
     
     if(isGoal(s.state, goal)):
       return (s.cost, s.stack)
@@ -94,23 +98,17 @@ def a_star(start, goal, max_height, heuristic):
     #pprint(children)
     
     for child in children:
+      new_cost = child[0] + s.cost
       new_state = child[1]
-      new_hash = toHashable(new_state)
-      if not new_hash in visited:
-        visited.add(new_hash)
-        
-        new_cost = child[0] + s.cost
-        
-        new_stack = s.stack[:]
-        new_stack.append(child[2])
-        
-        #print(new_state)
-        ps = PrioritizedState(new_cost + heuristic(new_state), new_cost, new_state, new_stack)
-        #print('consistent', heuristicConsistent(new_state, goal))
-        #print('inconsistent', heuristicInconsistent(new_state, goal))
-        #print(ps.__dict__)
-        
-        q.put(ps)
+      new_stack = s.stack[:]
+      new_stack.append(child[2])
+      
+      #print(new_state)
+      ps = PrioritizedState(new_cost + heuristic(new_state), new_cost, new_state, new_stack)
+      #print('consistent', heuristicConsistent(new_state, goal))
+      #print('inconsistent', heuristicInconsistent(new_state, goal))
+      
+      q.put(ps)
 
 
   return None
