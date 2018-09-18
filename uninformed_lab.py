@@ -46,7 +46,6 @@ def generateStates(state, height):
         continue
       
       new_state = [x[:] for x in state]
-
       new_state[dest].append(new_state[pivot][-1])
       new_state[pivot] = new_state[pivot][:-1]
       
