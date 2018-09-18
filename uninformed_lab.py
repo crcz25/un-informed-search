@@ -7,6 +7,7 @@ import sys
 import fileinput
 from pprint import pprint
 from queue import PriorityQueue
+from itertools import zip_longest
 
 class PrioritizedState:
   def __init__(self, priority, cost, state, stack):
@@ -98,8 +99,16 @@ def a_star(start, goal, max_height, heuristic):
       new_stack = s.stack[:]
       new_stack.append(child[2])
       
-      #print(new_state)
+      #UCS
       ps = PrioritizedState(new_cost + heuristic(new_state), new_cost, new_state, new_stack)
+      
+      #Consistent heuristic
+      #print('consistent', heuristicConsistent(new_state, goal))
+      #ps = PrioritizedState(new_cost + heuristicConsistent(new_state, goal), new_cost, new_state, new_stack)
+      
+      #Inconsisten heuristic
+      #print('inconsistent', heuristicInconsistent(new_state, goal))
+      #ps = PrioritizedState(new_cost + heuristicInconsistent(new_state, goal), new_cost, new_state, new_stack)
       
       q.put(ps)
 
@@ -108,6 +117,30 @@ def a_star(start, goal, max_height, heuristic):
   
 def heuristicZero(state):
   return 0
+
+# Calculate misplaced blocks
+def heuristicConsistent(state, goal):
+  #print('state:', state, 'goal:', goal)
+  misplaced_blocks = 0
+  for index, (stateElement, goalElement) in enumerate(zip_longest(state, goal)):
+    #print(index, 'if', stateElement, '!=', goalElement)
+    if stateElement != goalElement:
+      misplaced_blocks = misplaced_blocks + 1
+  
+  #print('misplaced', misplaced_blocks)
+  return misplaced_blocks
+
+# Calculate misplaced blocks * 2
+def heuristicInconsistent(state, goal):
+  #print('state:', state, 'goal:', goal)
+  misplaced_blocks = 0
+  for index, (stateElement, goalElement) in enumerate(zip_longest(state, goal)):
+    #print(index, 'if', stateElement, '!=', goalElement)
+    if stateElement != goalElement:
+      misplaced_blocks = misplaced_blocks + 1
+  
+  #print('misplaced', misplaced_blocks)
+  return misplaced_blocks * 2
 
 def main():
   lines = []
