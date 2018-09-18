@@ -5,6 +5,7 @@
 """
 import sys
 import fileinput
+import argparse
 from pprint import pprint
 from queue import PriorityQueue
 from itertools import zip_longest
@@ -102,22 +103,14 @@ def a_star(start, goal, max_height, heuristic):
       new_stack.append(child[2])
       
       #UCS
-      ps = PrioritizedState(new_cost + heuristic(new_state), new_cost, new_state, new_stack)
-      
-      #Consistent heuristic
-      #print('consistent', heuristicConsistent(new_state, goal))
-      #ps = PrioritizedState(new_cost + heuristicConsistent(new_state, goal), new_cost, new_state, new_stack)
-      
-      #Inconsisten heuristic
-      #print('inconsistent', heuristicInconsistent(new_state, goal))
-      #ps = PrioritizedState(new_cost + heuristicInconsistent(new_state, goal), new_cost, new_state, new_stack)
+      ps = PrioritizedState(new_cost + heuristic(new_state, goal), new_cost, new_state, new_stack)
       
       q.put(ps)
 
 
   return None
   
-def heuristicZero(state):
+def heuristicZero(state, goal):
   return 0
 
 # Calculate misplaced blocks
@@ -144,13 +137,15 @@ def heuristicInconsistent(state, goal):
   #print('misplaced', misplaced_blocks)
   return misplaced_blocks * 2
 
-def main():
+def main(heu):
+  #print(heu)
   lines = []
   start = []
   goal = []
+
   for line in fileinput.input():
     lines.append(line.rstrip())
-
+  
   #Obtain max height of container
   height = int(lines[0])
   #Create start containers
@@ -158,7 +153,9 @@ def main():
   #Create goal containers
   create_containers(lines[2], goal)
   
-  res = a_star(start, goal, height, heuristicZero)
+  res = a_star(start, goal, height, heu)
+  #res = a_star(start, goal, height, heuristicConsistent)
+  #res = a_star(start, goal, height, heuristicInconsistent)
   
   if res == None:
     print('No solution found')
@@ -168,4 +165,7 @@ def main():
     print('; '.join(steps))
 
 if __name__ == '__main__':
-  main()
+  main(heuristicZero)
+  #main(heuristicConsistent)
+  #main(heuristicInconsistent)
+  
