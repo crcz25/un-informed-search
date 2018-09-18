@@ -7,6 +7,7 @@ import sys
 import fileinput
 from pprint import pprint
 from queue import PriorityQueue
+from itertools import zip_longest
 
 class PrioritizedState:
   def __init__(self, priority, cost, state, stack):
@@ -38,6 +39,7 @@ def create_containers(line, array):
 
 def generateStates(state, height):
   children = []
+  #print(state, height)
   
   for pivot in range(len(state)):
     for dest in range(len(state)):
@@ -89,6 +91,7 @@ def a_star(start, goal, max_height, heuristic):
       return (s.cost, s.stack)
     
     children = generateStates(s.state, max_height)
+    #pprint(children)
     
     for child in children:
       new_state = child[1]
@@ -103,6 +106,9 @@ def a_star(start, goal, max_height, heuristic):
         
         #print(new_state)
         ps = PrioritizedState(new_cost + heuristic(new_state), new_cost, new_state, new_stack)
+        #print('consistent', heuristicConsistent(new_state, goal))
+        #print('inconsistent', heuristicInconsistent(new_state, goal))
+        #print(ps.__dict__)
         
         q.put(ps)
 
@@ -111,6 +117,29 @@ def a_star(start, goal, max_height, heuristic):
   
 def heuristicZero(state):
   return 0
+
+# Calculate misplaced blocks
+def heuristicConsistent(state, goal):
+  #print('state:', state, 'goal:', goal)
+  misplaced_blocks = 0
+  for index, (stateElement, goalElement) in enumerate(zip_longest(state, goal)):
+    #print(index, 'if', stateElement, '!=', goalElement)
+    if stateElement != goalElement:
+      misplaced_blocks = misplaced_blocks + 1
+  
+  #print('misplaced', misplaced_blocks)
+  return misplaced_blocks
+
+def heuristicInconsistent(state, goal):
+  #print('state:', state, 'goal:', goal)
+  misplaced_blocks = 0
+  for index, (stateElement, goalElement) in enumerate(zip_longest(state, goal)):
+    #print(index, 'if', stateElement, '!=', goalElement)
+    if stateElement != goalElement:
+      misplaced_blocks = misplaced_blocks + 1
+  
+  #print('misplaced', misplaced_blocks)
+  return misplaced_blocks * 2
 
 def main():
   lines = []
