@@ -43,19 +43,16 @@ def generateStates(state, height):
   
   for pivot in range(len(state)):
     for dest in range(len(state)):
-      if pivot != dest:
-        if len(state[dest]) == height or len(state[pivot]) == 0:
-          continue
-        
-        new_state = [x[:] for x in state]
-  
-        new_state[dest].append(new_state[pivot][-1])
-        new_state[pivot] = new_state[pivot][:-1]
-        
-        new_cost = 1 + abs(pivot - dest)
+      if pivot == dest or (len(state[dest]) == height or len(state[pivot]) == 0):
+        continue
+      
+      new_state = [x[:] for x in state]
+      new_state[dest].append(new_state[pivot][-1])
+      new_state[pivot] = new_state[pivot][:-1]
+      
+      new_cost = 1 + abs(pivot - dest)
 
-        children.append( (new_cost, new_state, (pivot, dest)) )
-        
+      children.append( (new_cost, new_state, (pivot, dest)) )
         
   return children
         
